@@ -15,7 +15,7 @@ namespace CoinArbiter.Controllers
             return View();
         }
 
-        public async Task<IActionResult> GetChartDataJSONAsync()
+        public async Task<IActionResult> GetHistoryChartJSONAsync()
         {
             List<SimpleCoin> priceList = new List<SimpleCoin>();
             using (var client = new HttpClient())
@@ -24,7 +24,7 @@ namespace CoinArbiter.Controllers
                 {
                     client.BaseAddress = new Uri("https://min-api.cryptocompare.com");
 
-                    var response = await client.GetAsync($"/data/histominute?fsym=BTC&tsym=USD&limit=10&aggregate=3&e=CCCAGG");
+                    var response = await client.GetAsync($"/data/histohour?fsym=BTC&tsym=USD&limit=19&aggregate=3&e=CCCAGG");
                     response.EnsureSuccessStatusCode();
                     var stringResult = await response.Content.ReadAsStringAsync();
                     //Deserialize the JSON response
@@ -42,7 +42,7 @@ namespace CoinArbiter.Controllers
                             SimpleCoin coin = new SimpleCoin
                             {
                                 Currency = "USD",
-                                Value = o.Close
+                                USD = o.Close
                             };
                             priceList.Add(coin);
                         }

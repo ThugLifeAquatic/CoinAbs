@@ -8,6 +8,6 @@ namespace CoinArbiter.Models
     public class SimpleCoin
     {
         public string Currency { get; set; }
-        public double Value { get; set; }
+        public double USD { get; set; }
     }
 }
