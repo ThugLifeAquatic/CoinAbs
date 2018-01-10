@@ -89,7 +89,7 @@ function DrawLive() {
 
                 chart.draw(data,
                     {
-                        title: "Bitcoin live price",
+                        title: "Bitcoin live price, updated every 11 seconds.",
                         position: "top",
                         fontsize: "14px",
                     });

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
+/// <summary>
+/// Model for deserializing a single price response from Cryptocompare.
+/// Generated from JSON using QuickType @ https://app.quicktype.io
+/// </summary>
 namespace CoinArbiter.Models
 {
 
