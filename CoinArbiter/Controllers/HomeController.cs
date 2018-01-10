@@ -4,16 +4,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using CoinArbiter.Models;
+using Microsoft.AspNetCore.Http;
 using System.Net.Http;
 
 namespace CoinArbiter.Controllers
 {
     public class HomeController : Controller
     {
+
         public IActionResult Index()
         {
             return View();
         }
+
 
         public async Task<IActionResult> GetHistoryChartJSONAsync()
         {
@@ -31,11 +34,9 @@ namespace CoinArbiter.Controllers
                     var rawData = ApiResponse.FromJson(stringResult);
                     if (rawData.Data != null)
                     {
-
                         IEnumerable<Datum> coinData = from o in rawData.Data
                                                       where o.Close != 0
                                                       select o;
-
 
                         foreach (var o in coinData)
                         {
@@ -53,8 +54,36 @@ namespace CoinArbiter.Controllers
                     return BadRequest($"Error getting requested price history from CryptoCompare: {httpRequestException.Message}");
                 }
 
-
                 return Json(priceList);
+            }
+        }
+
+
+        public async Task<IActionResult> GetLivePriceAsync()
+        {
+            SimpleCoin newCoin = new SimpleCoin();
+
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    client.BaseAddress = new Uri("https://min-api.cryptocompare.com");
+
+                    var response = await client.GetAsync($"/data/price?fsym=BTC&tsyms=USD");
+                    response.EnsureSuccessStatusCode();
+                    var stringResult = await response.Content.ReadAsStringAsync();
+
+                    //Deserialize the JSON response
+                    var rawData = PriceOnly.FromJson(stringResult);
+
+                    newCoin.Currency = "USD";
+                    newCoin.USD = rawData.Usd;
+                }
+                catch (HttpRequestException httpRequestException)
+                {
+                    return BadRequest($"Error getting requested price history from CryptoCompare: {httpRequestException.Message}");
+                }
+                return Json(newCoin);
             }
         }
     }
