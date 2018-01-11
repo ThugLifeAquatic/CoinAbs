@@ -1,58 +1,38 @@
 ﻿<head>
+    @* Import JQUERY (needed for Google Charts to work) *@
     <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"></script>
+    @* Import Google Charts *@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-        google.charts.load('current', { 'packages': ['corechart'] });
-
-        //Call function after Google Chart is loaded, it is required, otherwise you may get error
-        google.charts.setOnLoadCallback(DrawonLoad);
-  
-        function DrawonLoad() {
-            $(function () {
-                console.log('Refresh')
-                $.ajax({
-                    type: 'GET',
-                    url: '/Home/GetChartDataJSONAsync',
-                    success: function (priceList) {
-                        // Callback that creates and populates a data table,
-                        // instantiates the pie chart, passes in the data and
-                        // draws it.
-
-                        //get priceList
-                        var Data = priceList;
-                        var data = new google.visualization.DataTable();
-
-                        data.addColumn('string', 'Currency');
-                        data.addColumn('number', 'USD');
-
-                        //Loop through each list data
-                        for (var i = 0; i < Data.length; i++) {
-                            data.addRow(["", Data[i].value]);
-                        }
-
-                        // Instantiate and draw our chart, passing in some options
-                        var chart = new google.visualization.ColumnChart(document.getElementById('chartdiv'));
-
-                        //Draw pie chart command with data and chart options
-                        chart.draw(data,
-                            {
-                                title: "Bitcoin price change per minute",
-                                position: "top",
-                                fontsize: "14px",
-                            });
-
-                    },
-                    error: function () {
-                        alert("Error loading data! Please try again.");
-                    }
-                });
-            })
-            setTimeout(DrawonLoad, 60000);
-        }
-    </script>
-
+    @* Import chartLoader.js from "wwwroot" folder *@
+    <script type="text/javascript" src="~/chartLoader.js"></script>
 </head>
+
 <body>
+    <h1>Bitcoin Price Tracker</h1>
+    <h3>Hourly and Live Bitcoin Price Tracking</h3>
+
+    @* Hourly Bitcoin price Chart *@
     <div id="chartdiv" style="width: 600px; height: 350px;">
     </div>
+
+    @* Live Bitcoin Price Chart *@
+    <div id="live-chartdiv" style="width: 600px; height: 350px;">
+    </div>
+
+    <h3>Technologies Used</h3>
+    <ul>
+        <li>Framework: ASP.NET Core</li>
+        <li>Charts: Google Charts</li>
+        <li>Data: CryptoCompare.com API</li>
+        <li>Languages: C#, Javascript</li>
+        <li>Testing: Moq, XUnit</li>
+    </ul>
+    <hr />
+    <h3>Methodology</h3>
+    <p> AJAX calls from the front-end query their respective counterpart action on the back-end. </p>
+    <p> The back-end action then queries CryptoCompare's api.</p>
+    <p> The back-end action then formats CryptoCompare's response into a simpler model.</p>
+    <p> The new models are passed back to the front-end as JSON.</p>
+    <p> The JSON is passed into Google Charts to Render to the page.</p>
+    <p> Each charting method recursively calls itself after a specified amount of time to update and redraw.</p>
 </body>
